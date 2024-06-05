@@ -70,7 +70,11 @@ class Hwmon():
                 name_key = name.read().strip()
                 name.close()
 
-                data[name_key] = dict()
+                symlink = os.readlink(os.path.join(sub_folder_path, 'device'))
+                symlink = symlink.strip().split("/")[-1]
+                sensor_name = f"{name_key}-{symlink}"
+
+                data[sensor_name] = dict()
 
                 for file_ in files:
 
@@ -78,11 +82,11 @@ class Hwmon():
 
                         if '_input' in file_:
                             label_name, value = self.extract_data(sub_folder_path, file_)
-                            data[name_key][label_name] = value
+                            data[sensor_name][label_name] = value
 
                         if '_average' in file_:
                             label_name, value = self.extract_data(sub_folder_path, file_)
-                            data[name_key][label_name] = value
+                            data[sensor_name][label_name] = value
 
                     except Exception:
                         pass
