@@ -40,7 +40,7 @@ class Hwmon():
 
             # See https://www.kernel.org/doc/Documentation/hwmon/sysfs-interface
             if file_.lower().startswith('in'):
-                return label_name, str(int(value) / 1000) + ' v'
+                return label_name, str(int(value) / 1000) + ' V'
             elif file_.lower().startswith('fan'):
                 return label_name, value + ' RPM'
             elif file_.lower().startswith('pwm'):
@@ -48,9 +48,9 @@ class Hwmon():
             elif file_.lower().startswith('temp'):
                 return label_name, str(int(value) / 1000) + ' C'
             elif file_.lower().startswith('curr'):
-                return label_name, str(int(value) / 1000) + ' a'
+                return label_name, str(int(value) / 1000) + ' A'
             elif file_.lower().startswith('power'):
-                return label_name, str(int(value) / 1000000) + ' w'
+                return label_name, str(int(value) / 1000000) + ' W'
             elif file_.lower().startswith('freq'):
                 return label_name, str(int(value) / 1000000) + ' MHz'
 
