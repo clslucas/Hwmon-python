@@ -18,25 +18,27 @@ class Hwmon():
         def __init__(self):
             self.master_path = '/sys/class/hwmon'
 
+        def read_data(self, data_path):
+            file = open(data_path, 'r')
+            data = file.read().strip()
+            file.close()
+            return data
+
         def extract_data(self, sub_folder_path, file_):
 
             if os.path.exists(os.path.join(sub_folder_path, file_.split('_')[0] + '_label')):
 
                 label_name = file_.split('_')[0] + '_label'
 
-                file = open(os.path.join(sub_folder_path, label_name), 'r')
-                label_name = file.read().strip()
-                file.close()
-                file = open(os.path.join(sub_folder_path, file_), 'r')
-                value = file.read().strip()
-                file.close()
+                label_name = self.read_data(os.path.join(sub_folder_path, label_name))
+                # only read input data, not to read the "*_input_highest" and "*_input_lowest"
+                if '_input_' not in file_:
+                    value = self.read_data(os.path.join(sub_folder_path, file_))
 
             else:
 
                 label_name = file_.split('_')[0]
-                file = open(os.path.join(sub_folder_path, file_), 'r')
-                value = file.read().strip()
-                file.close()
+                value = self.read_data(os.path.join(sub_folder_path, file_))
 
             # See https://www.kernel.org/doc/Documentation/hwmon/sysfs-interface
             if file_.lower().startswith('in'):
@@ -66,9 +68,7 @@ class Hwmon():
 
                 files = os.listdir(sub_folder_path)
 
-                name = open(os.path.join(sub_folder_path, 'name'), 'r')
-                name_key = name.read().strip()
-                name.close()
+                name_key = self.read_data(os.path.join(sub_folder_path, 'name'))
 
                 symlink = os.readlink(os.path.join(sub_folder_path, 'device'))
                 symlink = symlink.strip().split("/")[-1]
